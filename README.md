@@ -29,6 +29,5 @@ To enable students to pay their examination and hostel fees online through a sec
 This mini project was completed by Anasuri Sravani and Lavanya as part of our MCA 3rd semester coursework.
 
 ## Contact
-- LinkedIn: [www.linkedin.com/in/
-sravanianasuri]  
+- LinkedIn: [www.linkedin.com/in/sravanianasuri]  
 - GitHub: [(https://github.com/SravaniAnasuri)]
