@@ -31,4 +31,4 @@ This mini project was completed by Anasuri Sravani and Lavanya as part of our MC
 ## Contact
 - LinkedIn: [www.linkedin.com/in/
 sravanianasuri]  
-- GitHub: [SravaniAnasuri]
+- GitHub: [[SravaniAnasuri](https://github.com/SravaniAnasuri)]
