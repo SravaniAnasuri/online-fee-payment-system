@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+            color: #333;
+        }
+        .details-table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+        .details-table th,
+        .details-table td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+        .details-table th {
+            font-weight: bold;
+            background-color: #f5f5f5;
+        }
+        .download-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+        }
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Payment Receipt</h2>
+        <img id="college-logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjE2kyon7waVjPTo1Um_2BcIjku0T2F0EWgA&s" alt="College Logo" style="display: block; margin: 0 auto; width: 100px; height: auto;">
+        <h3 style="text-align: center;">SRAVANYA University</h3>
+        <!-- Details Table -->
+        <table class="details-table" id="detailsTable"></table>
+        <a href="#" class="download-btn" onclick="generatePDF()">Download Receipt as PDF</a>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+        // Retrieve data from localStorage
+        const feeType = localStorage.getItem("feeType") || "N/A";
+        const hallTicket = localStorage.getItem("hallTicket") || "N/A";
+        const studentName = localStorage.getItem("studentName") || "N/A";
+        const email = localStorage.getItem("studentEmail") || "N/A";
+        const mobileNumber = localStorage.getItem("mobileNumber") || "N/A";
+        const courseType = localStorage.getItem("courseType") || "N/A";
+        const courseName = localStorage.getItem("courseName") || "N/A";
+        const semester = localStorage.getItem("semester") || "N/A";
+        const roomNumber = localStorage.getItem("roomNumber") || "N/A";
+        const feeTypeDetails = localStorage.getItem("feeTypeDetails") || "N/A";
+        const amountPaid = localStorage.getItem("amountPaid") || "N/A";
+        const transactionId = localStorage.getItem("transactionId") || "N/A";
+        const paymentDate = localStorage.getItem("paymentDate") || "N/A";
+        const status = "Successful";
+
+        const detailsTable = document.getElementById("detailsTable");
+        // Create table rows dynamically
+        const rows = [
+            ["Student Name", studentName],
+            ["Email", email],
+            ["Mobile Number", mobileNumber],
+            ["Hall Ticket No", hallTicket],
+            ...(feeType === "examination"
+                ? [
+                    ["Course Type", courseType],
+                    ["Course Name", courseName],
+                    ["Semester", semester],
+                    ["Exam Fee Type", feeTypeDetails],
+                ]
+                : [
+                    ["Course Type", courseType],
+                    ["Course Name", courseName],
+                    ["Semester", semester],
+                    ["Room Number", roomNumber],
+                    ["Hostel Fee Type", feeTypeDetails],
+                ]),
+            ["Transaction ID", transactionId],
+            ["Amount Paid", amountPaid],
+            ["Payment Date", paymentDate],
+            ["Status", status],
+        ];
+        // Populate the table
+        rows.forEach(([label, value]) => {
+            const row = `<tr>
+                <th>${label}</th>
+                <td>${value}</td>
+            </tr>`;
+            detailsTable.innerHTML += row;
+        });
+        // Generate PDF
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            // Title
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(18);
+            doc.text("Payment Receipt", 105, 20, { align: "center" });
+            // Subtitle
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(14);
+            doc.text(
+                feeType === "examination" ? "Examination Fee Receipt" : "Hostel Fee Receipt",
+                105,
+                30,
+                { align: "center" }
+            );
+            // Separator line
+            doc.setLineWidth(0.5);
+            doc.line(15, 35, 195, 35);
+
+            // Details
+            let yPosition = 45; // Start below the line
+            const labelX = 20; // X position for the labels
+            const colonX = 80; // X position for the colon
+            const valueX = 85; // X position for the values
+
+            rows.forEach(([label, value]) => {
+                // Draw label
+                doc.setFont("Helvetica", "bold");
+                doc.setFontSize(12);
+                doc.text(label, labelX, yPosition);
+
+                // Draw colon
+                doc.setFont("Helvetica", "normal");
+                doc.text(":", colonX, yPosition);
+
+                // Draw value
+                doc.text(value, valueX, yPosition);
+
+                yPosition += 10; // Move to the next line
+            });
+            // Footer separator line
+            doc.line(15, yPosition, 195, yPosition);
+            yPosition += 10;
+            // Footer Note
+            doc.setFont("Helvetica", "italic");
+            doc.setFontSize(10);
+            doc.text("Thank you for your payment!", 105, yPosition, { align: "center" });
+            // Save the PDF
+            doc.save(`${feeType}_receipt.pdf`);
+        }
+    </script>
+</body>
+</html>

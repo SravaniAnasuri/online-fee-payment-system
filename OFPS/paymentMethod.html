@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Method</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+        .payment-options {
+            margin-top: 20px;
+        }
+        .payment-options label {
+            display: block;
+            margin: 10px 0;
+            font-size: 16px;
+            color: #555;
+        }
+        .card-details {
+            margin-top: 20px;
+            display: none; 
+        }
+        .card-details h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .card-details label {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+        .card-details input,
+        .card-details select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .card-details input:focus,
+        .card-details select:focus {
+            outline: none;
+            border-color: #007BFF;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        .expiry-date {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .pay-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .pay-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Payment Method</h2>
+        <p id="feeDetails"></p>
+
+        <div class="payment-options">
+            <label>
+                <input type="radio" name="paymentMethod" value="Credit Card" onclick="showCardDetails()">
+                Credit Card
+            </label>
+            <label>
+                <input type="radio" name="paymentMethod" value="Debit Card" onclick="showCardDetails()">
+                Debit Card
+            </label>
+            <label>
+                <input type="radio" name="paymentMethod" value="UPI" onclick="showUpiDetails()">
+                UPI
+            </label>
+            <label>
+                <input type="radio" name="paymentMethod" value="Bank Transfer" onclick="showBankDetails()">
+                Bank Transfer
+            </label>
+        </div>
+        <div class="card-details" id="cardDetails">
+            <h3>Enter Card Details</h3>
+            <label>Card Number:</label>
+            <input type="text" id="cardNumber" placeholder="Enter your card number" required>
+            <label>Cardholder Name:</label>
+            <input type="text" id="cardholderName" placeholder="Enter cardholder's name" required>
+            
+            <label>Expiry Date:</label>
+            <div class="expiry-date">
+                <select id="expiryMonth" required>
+                    <option value="" disabled selected>Month</option>
+                    <option value="01">January</option>
+                    <option value="02">February</option>
+                    <option value="03">March</option>
+                    <option value="04">April</option>
+                    <option value="05">May</option>
+                    <option value="06">June</option>
+                    <option value="07">July</option>
+                    <option value="08">August</option>
+                    <option value="09">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+                <select id="expiryYear" required>
+                    <option value="" disabled selected>Year</option>
+                </select>
+            </div>
+            <label>CVV:</label>
+            <input type="text" id="cvv" placeholder="Enter CVV" required>
+        </div>
+        <!-- UPI Details -->
+        <div class="card-details" id="upiDetails" style="display: none;">
+            <h3>Enter UPI Transaction Details</h3>
+            <label>UPI ID:</label>
+            <input type="text" id="upiId" placeholder="Enter your UPI ID">
+            <label>Transaction ID:</label>
+            <input type="text" id="upiTransactionId" placeholder="Enter UPI Transaction ID">
+        </div>
+        <!-- Bank Transfer Details -->
+        <div class="card-details" id="bankDetails" style="display: none;">
+            <h3>Enter Bank Transaction Details</h3>
+            <label>Account Holder Name:</label>
+            <input type="text" id="accountHolder" placeholder="Enter Account Holder Name">
+            <label>Account Number:</label>
+            <input type="text" id="accountNumber" placeholder="Enter Account Number">
+            <label>IFSC Code:</label>
+            <input type="text" id="ifscCode" placeholder="Enter IFSC Code">
+        </div>
+        <a href="#" class="pay-button" onclick="proceedToPay()">Proceed to Pay</a>
+    </div>
+    <script>
+        // Get query parameters from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const feeType = urlParams.get('feeType');
+        const studentName = urlParams.get('studentName') || urlParams.get('hostelName');
+        const email = urlParams.get('studentEmail') || urlParams.get('hostelEmail');
+        // Display fee details dynamically
+        const feeDetails = document.getElementById('feeDetails');
+        if (feeType === 'examination') {
+            feeDetails.textContent = `Examination Fee Payment for ${studentName} (${email}).`;
+        } else if (feeType === 'hostel') {
+            feeDetails.textContent = `Hostel Fee Payment for ${studentName} (${email}).`;
+        }
+
+        function showCardDetails() {
+            document.getElementById("cardDetails").style.display = "block";
+            document.getElementById("upiDetails").style.display = "none";
+            document.getElementById("bankDetails").style.display = "none";
+        }
+
+        function showUpiDetails() {
+            document.getElementById("cardDetails").style.display = "none";
+            document.getElementById("upiDetails").style.display = "block";
+            document.getElementById("bankDetails").style.display = "none";
+        }
+
+        function showBankDetails() {
+            document.getElementById("cardDetails").style.display = "none";
+            document.getElementById("upiDetails").style.display = "none";
+            document.getElementById("bankDetails").style.display = "block";
+        }
+        // Populate expiryYear dropdown with current year and next 10 years
+        function populateExpiryYear() {
+            const currentYear = new Date().getFullYear();
+            const expiryYearSelect = document.getElementById('expiryYear');
+            for (let i = 0; i <= 10; i++) {
+                const yearOption = document.createElement('option');
+                yearOption.value = currentYear + i;
+                yearOption.textContent = currentYear + i;
+                expiryYearSelect.appendChild(yearOption);
+            }
+        }
+        // Call the function when the page loads
+        populateExpiryYear();
+
+        function proceedToPay() {
+        const feeType = localStorage.getItem("feeType");
+        const feeTypeDetails = localStorage.getItem("feeTypeDetails"); // Retrieve specific fee type
+        let amountPaid = "N/A";
+
+        if (feeType === "examination") {
+            if (feeTypeDetails === "semester_fee") {
+                amountPaid = "₹1000";
+            } else if (feeTypeDetails === "late_fee") {
+                amountPaid = "₹300";
+            } else if (feeTypeDetails === "college_fee") {
+                amountPaid = "₹25000";
+            }
+        } else if (feeType === "hostel") {
+            if (feeTypeDetails === "hostel_fee") {
+                amountPaid = "₹1500";
+            } else if (feeTypeDetails === "maintenance_fee") {
+                amountPaid = "₹500";
+            }
+        }
+
+        const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked');
+        const cardNumber = document.getElementById('cardNumber')?.value || '';
+        const cardholderName = document.getElementById('cardholderName')?.value || '';
+        const expiryMonth = document.getElementById('expiryMonth')?.value || '';
+        const expiryYear = document.getElementById('expiryYear')?.value || '';
+        const cvv = document.getElementById('cvv')?.value || '';
+        const upiId = document.getElementById('upiId')?.value || '';
+        const accountHolder = document.getElementById('accountHolder')?.value || '';
+        const accountNumber = document.getElementById('accountNumber')?.value || '';
+        const ifscCode = document.getElementById('ifscCode')?.value || '';
+
+        if (!selectedMethod) {
+            alert('Please select a payment method.');
+            return;
+        }
+
+        let requiredFields = [];
+            if (selectedMethod.value === 'UPI') {
+                requiredFields = ['upiId', 'upiTransactionId'];
+            } else if (selectedMethod.value === 'Bank Transfer') {
+                requiredFields = ['accountHolder', 'accountNumber', 'ifscCode'];
+            } else if (selectedMethod.value === 'Credit Card' || selectedMethod.value === 'Debit Card') {
+                requiredFields = ['cardNumber', 'cardholderName', 'expiryMonth', 'expiryYear', 'cvv'];
+            }
+
+            for (let field of requiredFields) {
+                if (!document.getElementById(field).value) {
+                    alert('Please fill out all required details.');
+                    return;
+                }
+            }
+    // Save details in localStorage
+        localStorage.setItem("transactionId", `TXN${Math.floor(Math.random() * 100000000)}`);
+        localStorage.setItem("amountPaid", amountPaid);
+        localStorage.setItem("paymentDate", new Date().toLocaleDateString());
+
+    if (feeType === "examination") {
+        const hallTicket = new URLSearchParams(window.location.search).get("hallTicket");
+        const studentName = new URLSearchParams(window.location.search).get("studentName");
+        const studentEmail = new URLSearchParams(window.location.search).get("studentEmail");
+        localStorage.setItem("hallTicket", hallTicket);
+        localStorage.setItem("studentName", studentName);
+        localStorage.setItem("studentEmail", studentEmail);
+    } else if (feeType === "hostel") {
+        const hallTicket = new URLSearchParams(window.location.search).get("hallTicket");
+        const studentName = new URLSearchParams(window.location.search).get("hostelName");
+        const studentEmail = new URLSearchParams(window.location.search).get("hostelEmail");
+        localStorage.setItem("hallTicket", hallTicket);
+        localStorage.setItem("hostelName", studentName);
+        localStorage.setItem("hostelEmail", studentEmail);
+    }
+    // Redirect to receipt page
+    window.location.href = "receipt.html?feeType=" + feeType;
+}
+    </script>
+</body>
+</html>

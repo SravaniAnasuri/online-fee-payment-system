@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery</title>
+    <style>
+        /* General reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* Body and General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        /* Navigation Bar */
+        nav {
+            background-color: #2c3e50;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style-type: none;
+        }
+        nav ul li {
+            margin: 0 20px;
+        }
+        nav ul li a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+        nav ul li a:hover {
+            color: #3498db;
+        }
+        ul {
+            list-style-type: none;
+        }
+        ul li {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            padding: 1rem;
+            border-bottom: 1px solid #ecf0f1;
+            transition: background-color 0.3s ease;
+        }
+        ul li:hover {
+            background-color: #ecf0f1;
+            border-radius: 50px;
+        }
+        ul li strong {
+            color: #3498db;
+            font-size: 1.3rem;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        /* Header Section */
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            background-color: #3498db;
+            color: white;
+        }
+        header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+        header p {
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+        /* Gallery Layout */
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+        }
+        .gallery img {
+            margin: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            width: 300px; 
+            height: auto; 
+            transition: transform 0.2s; 
+            cursor: pointer; 
+        }
+        .gallery img:hover {
+            transform: scale(1.05); 
+        }
+        /* Lightbox styles */
+        .lightbox {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .lightbox:target {
+            display: flex;
+        }
+        .close {
+             position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        /* Footer Section */
+        footer {
+            background-color: #2c3e50;
+            text-align: center;
+            padding: 1.5rem;
+            color: white;
+            margin-top: 2rem;
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            header p {
+                font-size: 1.1rem;
+            }
+
+            .gallery {
+                padding: 1rem;
+            }
+
+            .gallery img {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="payment.html">Payment Portal</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+    <header>
+        <h1>Gallery</h1>
+        <p>Check out our campus events and activities.</p>
+    </header>
+    <div class="gallery">
+        <img src="https://revaeduin.s3.ap-south-1.amazonaws.com/uploads/album/1637408915_f3ac2da0b20ce98aec1d.jpg" alt="Event 1" onclick="openLightbox(this.src)">
+        <img src="https://revaeduin.s3.ap-south-1.amazonaws.com/uploads/album/1637408931_2f82f17832558c37af08.jpg" alt="Event 2" onclick="openLightbox(this.src)">
+        <img src="https://revaeduin.s3.ap-south-1.amazonaws.com/uploads/album/1637408948_e322979f8a7ecde06b8d.jpg" alt="Event 3" onclick="openLightbox(this.src)">
+        <img src="https://revaeduin.s3.ap-south-1.amazonaws.com/uploads/album/1637408591_7eeeeadd3bff6a5ce23a.jpg" alt="Event 4" onclick="openLightbox(this.src)">
+        <img src="https://revaeduin.s3.ap-south-1.amazonaws.com/uploads/album/1637411179_baf92d6bcd6f7c086096.png" alt="Event 5" onclick="openLightbox(this.src)">
+        <img src="https://revaeduin.s3.ap-south-1.amazonaws.com/uploads/album/1637410135_185312809f0a0f732d14.png" alt="Event 6" onclick="openLightbox(this.src)">
+        <img src="https://revaeduin.s3.ap-south-1.amazonaws.com/uploads/album/1640161635.jpg" alt="Event 7" onclick="openLightbox(this.src)">
+        <img src="https://revaeduin.s3.ap-south-1.amazonaws.com/uploads/album/1640163208.jpg" alt="Event 8" onclick="openLightbox(this.src)">
+    </div>
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="close" onclick="closeLightbox()">&times;</span>
+        <img id="lightbox-img" src="" alt="Lightbox Image">
+    </div>
+    <footer>
+        <p>&copy; 2025 SRAVANYA University. All rights reserved.</p>
+    </footer>
+    <script>
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

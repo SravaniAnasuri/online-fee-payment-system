@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fee Payment Dashboard</title>
+    <style>
+        /* CSS for Sidebar and Forms */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+        .sidebar {
+            width: 350px;
+            height:1000px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+        }
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sidebar a {
+            color: white;
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+        .sidebar a:hover {
+            background-color: #34495e;
+        }
+        .content {
+            margin-left: 100px;
+            margin-right: 100px;
+            padding: 20px;
+            width: 100%;
+        }
+        .form-container {
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #34495e;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <a href="#" onclick="showForm('examFeeForm')">Examination Fee</a>
+        <a href="#" onclick="showForm('hostelFeeForm')">Hostel Monthly Fee</a>
+    </div>
+    <!-- Content Section -->
+    <div class="content" >
+        <!-- Default Form (Empty Labels) -->
+        <div id="defaultForm" class="form-container" >
+            <h2>Student Details</h2>
+            <label>Student Name:</label>
+            <input type="text" id="defaultName" placeholder="Enter your name" readonly >
+            <label>Email:</label>
+            <input type="email" id="defaultEmail" placeholder="Enter your email" readonly>
+        </div>
+        <!-- Examination Fee Form (Hidden Initially) -->
+        <div id="examFeeForm" class="form-container hidden">
+            <h2>Examination Fee Payment</h2>
+            <form onsubmit="saveExamFee(event)">
+                <label>Hall Ticket No:</label>
+                <input type="text" id="hallTicket" placeholder="Hall Ticket" required>
+                <label>Student Name:</label>
+                <input type="text" id="studentName" placeholder="Full Name" required readonly>
+                <label>Email:</label>
+                <input type="email" id="studentEmail" placeholder="Email" required readonly>
+                <label>Mobile Number:</label>
+                <input type="tel" id="MobileNumber" placeholder="Mobile Number" required>
+
+                <label for="schoolType">School Type:</label>
+                <select id="schoolType" onchange="updateCourseTypes()" required>
+                    <option value="">-- Select School Type --</option>
+                    <option value="School of Sciences">School of Sciences</option>
+                    <option value="School of Social Sciences">School of Social Sciences</option>
+                    <option value="School of Engineering & Technology">School of Engineering & Technology</option>
+                    <option value="School of Nursing">School of Nursing</option>
+                </select>
+
+                <label for="courseType">Course Type:</label>
+                <select id="courseType" onchange="updateCourseNames()" required>
+                    <option value="">-- Select Course Type --</option>
+                </select>
+
+                <label for="courseName">Course Name:</label>
+                <select id="courseName" required>
+                    <option value="">-- Select Course Name --</option>
+                </select>
+
+                <label>Semester/Year:</label>
+                <input type="text" id="semesterYear" placeholder="Semester/Year" required>
+        
+                <label>Date (dd/mm/yyyy):</label>
+                <input type="text" id="examDate" readonly />
+
+                <label for="examFeeType">Fee Type:</label>
+                <select id="examFeeType" required>
+                    <option value="">-- Select Fee Type --</option>
+                    <option value="semester_fee">Semester Fee</option>
+                    <option value="late_fee">Late Fee</option>
+                    <option value="college_fee">College Fee</option>
+                </select>
+
+                <label>Amount:</label>
+                <input type="text" id="examAmount" placeholder="Amount">
+
+                <button type="submit">Pay Examination Fee</button>
+            </form>
+        </div>
+        <!-- Hostel Fee Form (Hidden Initially) -->
+        <div id="hostelFeeForm" class="form-container hidden">
+            <h2>Hostel Fee Payment</h2>
+            <form onsubmit="saveHostelFee(event)">
+                <label>Hall Ticket No:</label>
+                <input type="text" id="hallTicket" placeholder="Hall Ticket" required>
+                <label>Student Name:</label>
+                <input type="text" id="hostelName" placeholder="Full Name" required>
+                <label>Email:</label>
+                <input type="email" id="hostelEmail" placeholder="Email" required>
+                <label>Mobile Number:</label>
+                <input type="tel" id="hostelMobileNumber" placeholder="Mobile Number" required>
+
+                <label for="hostelSchoolType">School Type:</label>
+                <select id="hostelSchoolType" onchange="updateHostelCourseTypes()" required>
+                    <option value="">-- Select School Type --</option>
+                    <option value="School of Sciences">School of Sciences</option>
+                    <option value="School of Social Sciences">School of Social Sciences</option>
+                    <option value="School of Engineering & Technology">School of Engineering & Technology</option>
+                    <option value="School of Nursing">School of Nursing</option>
+                </select>
+
+                <label for="hostelCourseType">Course Type:</label>
+                <select id="hostelCourseType" onchange="updateHostelCourseNames()" required>
+                    <option value="">-- Select Course Type --</option>
+                </select>
+
+                <label for="hostelCourseName">Course Name:</label>
+                <select id="hostelCourseName" required>
+                    <option value="">-- Select Course Name --</option>
+                </select>
+
+                <label>Semester/Year:</label>
+                <input type="text" id="hostelSemesterYear" placeholder="Semester/Year" required>
+                <label>Room Number:</label>
+                <input type="text" id="hostelRoomNumber" placeholder="Room Number" required>
+
+                <label>Date (dd/mm/yyyy):</label>
+                <input type="text" id="hostelDate" readonly />
+
+                <label for="payingMonth">Paying Month:</label>
+                <select id="payingMonth" onchange="updateDaysDropdown()" required>
+                    <option value="">-- Select Month --</option>
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+
+                <label for="numberOfDays">Number of Days:</label>
+                <select id="numberOfDays" required>
+                    <option value="">-- Select Days --</option>
+                </select>
+
+                <label for="hostelFeeType">Fee Type:</label>
+                <select id="hostelFeeType" required>
+                    <option value="">-- Select Fee Type --</option>
+                    <option value="hostel_fee">Hostel Fee</option>
+                    <option value="maintenance_fee">Maintenance Fee</option>
+                </select>
+
+                <label>Amount:</label>
+                <input type="text" id="hostelAmount" readonly>
+
+                <button type="submit">Pay Hostel Fee</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // JavaScript for form visibility and dropdowns
+        function showForm(formId) {
+            const forms = document.querySelectorAll('.form-container');
+            forms.forEach(form => form.classList.add('hidden')); // Hide all forms
+            document.getElementById(formId).classList.remove('hidden'); // Show the selected form
+        }
+        // Function to load student details from localStorage
+        function loadStudentDetails() {
+            let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+            if (currentUser) {
+                // Autofill the default student details section
+                document.getElementById("defaultName").value = currentUser.username;
+                document.getElementById("defaultEmail").value = currentUser.email;
+
+                // Autofill the Examination Fee Payment form
+                document.getElementById("studentName").value = currentUser.username;
+                document.getElementById("studentEmail").value = currentUser.email;
+
+                // Autofill the Hostel Fee Payment form
+                document.getElementById("hostelName").value = currentUser.username;
+                document.getElementById("hostelEmail").value = currentUser.email;
+            }
+        }
+        // Update course types based on school type for Examination Fee
+        function updateCourseTypes() {
+            const schoolType = document.getElementById('schoolType').value;
+            const courseTypeSelect = document.getElementById('courseType');
+            courseTypeSelect.innerHTML = '<option value="">-- Select Course Type --</option>';
+
+            let courseTypes = [];
+            if (schoolType === 'School of Sciences') {
+                courseTypes = ['B.Sc', 'M.Sc'];
+            } else if (schoolType === 'School of Social Sciences') {
+                courseTypes = ['B.A', 'M.A'];
+            } else if (schoolType === 'School of Engineering & Technology') {
+                courseTypes = ['B.Tech', 'M.Tech'];
+            } else if (schoolType === 'School of Nursing') {
+                courseTypes = ['B.Sc Nursing', 'M.Sc Nursing'];
+            }
+
+            courseTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                courseTypeSelect.appendChild(option);
+            });
+        }
+        // Update course names based on course type for Examination Fee
+        function updateCourseNames() {
+            const courseType = document.getElementById('courseType').value;
+            const courseNameSelect = document.getElementById('courseName');
+            courseNameSelect.innerHTML = '<option value="">-- Select Course Name --</option>';
+
+            let courseNames = [];
+            if (courseType === 'B.Sc') {
+                courseNames = ['Physics', 'Chemistry', 'Mathematics'];
+            } else if (courseType === 'M.Sc') {
+                courseNames = ['Physics', 'Chemistry', 'Biology'];
+            } else if (courseType === 'B.A') {
+                courseNames = ['History', 'English', 'Sociology'];
+            } else if (courseType === 'M.A') {
+                courseNames = ['English', 'Sociology', 'Psychology'];
+            } else if (courseType === 'B.Tech') {
+                courseNames = ['Computer Science', 'Mechanical Engineering', 'Electrical Engineering'];
+            } else if (courseType === 'M.Tech') {
+                courseNames = ['Computer Science', 'Mechanical Engineering'];
+            } else if (courseType === 'B.Sc Nursing') {
+                courseNames = ['General Nursing', 'Pediatric Nursing'];
+            } else if (courseType === 'M.Sc Nursing') {
+                courseNames = ['Psychiatric Nursing', 'Community Health Nursing'];
+            }
+
+            courseNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                courseNameSelect.appendChild(option);
+            });
+        }
+        // Update course types based on school type for Hostel Fee
+        function updateHostelCourseTypes() {
+            const schoolType = document.getElementById('hostelSchoolType').value;
+            const courseTypeSelect = document.getElementById('hostelCourseType');
+            courseTypeSelect.innerHTML = '<option value="">-- Select Course Type --</option>';
+
+            let courseTypes = [];
+            if (schoolType === 'School of Sciences') {
+                courseTypes = ['B.Sc', 'M.Sc'];
+            } else if (schoolType === 'School of Social Sciences') {
+                courseTypes = ['B.A', 'M.A'];
+            } else if (schoolType === 'School of Engineering & Technology') {
+                courseTypes = ['B.Tech', 'M.Tech'];
+            } else if (schoolType === 'School of Nursing') {
+                courseTypes = ['B.Sc Nursing', 'M.Sc Nursing'];
+            }
+
+            courseTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                courseTypeSelect.appendChild(option);
+            });
+        }
+        // Update course names based on course type for Hostel Fee
+        function updateHostelCourseNames() {
+            const courseType = document.getElementById('hostelCourseType').value;
+            const courseNameSelect = document.getElementById('hostelCourseName');
+            courseNameSelect.innerHTML = '<option value="">-- Select Course Name --</option>';
+
+            let courseNames = [];
+            if (courseType === 'B.Sc') {
+                courseNames = ['Physics', 'Chemistry', 'Mathematics'];
+            } else if (courseType === 'M.Sc') {
+                courseNames = ['Physics', 'Chemistry', 'Biology'];
+            } else if (courseType === 'B.A') {
+                courseNames = ['History', 'English', 'Sociology'];
+            } else if (courseType === 'M.A') {
+                courseNames = ['English', 'Sociology', 'Psychology'];
+            } else if (courseType === 'B.Tech') {
+                courseNames = ['Computer Science', 'Mechanical Engineering', 'Electrical Engineering'];
+            } else if (courseType === 'M.Tech') {
+                courseNames = ['Computer Science', 'Mechanical Engineering'];
+            } else if (courseType === 'B.Sc Nursing') {
+                courseNames = ['General Nursing', 'Pediatric Nursing'];
+            } else if (courseType === 'M.Sc Nursing') {
+                courseNames = ['Psychiatric Nursing', 'Community Health Nursing'];
+            }
+
+            courseNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                courseNameSelect.appendChild(option);
+            });
+        }
+        // Function to set default date in dd/mm/yyyy format
+        function setDefaultDate() {
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+            const yyyy = today.getFullYear();
+
+            const formattedDate = `${dd}/${mm}/${yyyy}`;
+            // Set default date in the form fields
+            document.getElementById('examDate').value = formattedDate;
+            document.getElementById('hostelDate').value = formattedDate;
+        }
+        // function to set DaysDropdown
+        function updateDaysDropdown() {
+        const month = document.getElementById("payingMonth").value;
+        const daysDropdown = document.getElementById("numberOfDays");
+        // Clear previous options
+        daysDropdown.innerHTML = '<option value="">-- Select Days --</option>';
+
+        let days = 31; // Default
+
+        if (month === "February") {
+            days = 28; // Non-leap year default
+            const currentYear = new Date().getFullYear();
+            if ((currentYear % 4 === 0 && currentYear % 100 !== 0) || (currentYear % 400 === 0)) {
+                days = 29; // Leap year
+            }
+        } else if (["April", "June", "September", "November"].includes(month)) {
+            days = 30; // Months with 30 days
+        }
+        // Populate days dropdown based on the selected month
+        for (let i = 1; i <= days; i++) {
+            const option = document.createElement("option");
+            option.value = i;
+            option.textContent = i;
+            daysDropdown.appendChild(option);
+        }
+    }
+        // Update amount for examination fee form
+        function updateExamAmount() {
+            const feeType = document.getElementById('examFeeType').value;
+            const examAmountInput = document.getElementById('examAmount');
+
+            let amount = '';
+            if (feeType === 'semester_fee') {
+                amount = '1000';
+            } else if (feeType === 'late_fee') {
+                amount = '300';
+            } else if (feeType === 'college_fee') {
+                amount = '25000';
+            }
+
+            examAmountInput.value = amount ? `₹${amount}` : ''; 
+        }
+        // Update amount for hostel fee form
+        function updateHostelAmount() {
+            const feeType = document.getElementById('hostelFeeType').value;
+            const hostelAmountInput = document.getElementById('hostelAmount');
+
+            let amount = '';
+            if (feeType === 'hostel_fee') {
+                amount = '1500';
+            } else if (feeType === 'maintenance_fee') {
+                amount = '500';
+            }
+
+            hostelAmountInput.value = amount ? `₹${amount}` : ''; 
+        }
+        // Event listener for 'examFeeType' to update exam fee amount
+        document.getElementById('examFeeType').addEventListener('change', updateExamAmount);
+        // Event listener for 'hostelFeeType' to update hostel fee amount
+        document.getElementById('hostelFeeType').addEventListener('change', updateHostelAmount);
+        // Placeholder function for saving exam fee and redirecting to Payment Method page
+        function saveExamFee(event) {
+            event.preventDefault();
+
+            const hallTicket = document.getElementById('hallTicket').value;
+            const studentName = document.getElementById('studentName').value;
+            const studentEmail = document.getElementById('studentEmail').value;
+            const mobileNumber = document.getElementById('MobileNumber').value;
+            const courseType = document.getElementById('courseType').value;
+            const courseName = document.getElementById('courseName').value;
+            const semester = document.getElementById('semesterYear').value;
+            const feeTypeDetails = document.getElementById('examFeeType').value;
+            const amountPaid = document.getElementById('examAmount').value;
+
+            // Store in localStorage
+            localStorage.setItem("feeType", "examination");
+            localStorage.setItem("hallTicket", hallTicket);
+            localStorage.setItem("studentName", studentName);
+            localStorage.setItem("studentEmail", studentEmail);
+            localStorage.setItem("mobileNumber", mobileNumber);
+            localStorage.setItem("courseType", courseType);
+            localStorage.setItem("courseName", courseName);
+            localStorage.setItem("semester", semester);
+            localStorage.setItem("feeTypeDetails", feeTypeDetails);
+            localStorage.setItem("amountPaid", amountPaid);
+
+            // Redirect to Payment Method page with query parameters
+            const queryParams = new URLSearchParams({
+                feeType: 'examination',
+                hallTicket,
+                studentName,
+                studentEmail,
+                mobileNumber,
+                courseType,
+                courseName,
+                semester,
+                feeTypeDetails,
+                amountPaid,
+                
+            }).toString();
+
+            window.location.href = `paymentMethod.html?${queryParams}`;
+        }
+        // Placeholder function for saving hostel fee and redirecting to Payment Method page
+        function saveHostelFee(event) {
+            event.preventDefault();
+
+            const hallTicket = document.getElementById('hallTicket').value;
+            const studentName = document.getElementById('hostelName').value;
+            const studentEmail = document.getElementById('hostelEmail').value;
+            const mobileNumber = document.getElementById('hostelMobileNumber').value;
+            const courseType = document.getElementById('hostelCourseType').value;
+            const courseName = document.getElementById('hostelCourseName').value;
+            const semester = document.getElementById('hostelSemesterYear').value;
+            const roomNumber = document.getElementById('hostelRoomNumber').value;
+            const feeTypeDetails = document.getElementById('hostelFeeType').value;
+            const amountPaid = document.getElementById('hostelAmount').value;
+
+            // Store in localStorage
+            localStorage.setItem("feeType", "hostel");
+            localStorage.setItem("hallTicket", hallTicket);
+            localStorage.setItem("studentName", studentName);
+            localStorage.setItem("studentEmail", studentEmail);
+            localStorage.setItem("mobileNumber", mobileNumber);
+            localStorage.setItem("courseType", courseType);
+            localStorage.setItem("courseName", courseName);
+            localStorage.setItem("semester", semester);
+            localStorage.setItem("roomNumber", roomNumber);
+            localStorage.setItem("feeTypeDetails", feeTypeDetails);
+            localStorage.setItem("amountPaid", amountPaid);
+
+            // Redirect to Payment Method page with query parameters
+            const queryParams = new URLSearchParams({
+                feeType: 'hostel',
+                hallTicket,
+                hostelName,
+                hostelEmail,
+                
+            }).toString();
+
+            window.location.href = `paymentMethod.html?${queryParams}`;
+        }
+        // Set default date when the page loads
+        window.onload = function () {
+            loadStudentDetails();
+            setDefaultDate(); // Call the function to set default date
+        };
+    </script>
+</body>
+</html>
